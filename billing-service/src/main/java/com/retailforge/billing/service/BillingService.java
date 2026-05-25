@@ -10,12 +10,13 @@ import com.retailforge.billing.repository.InvoiceRepository;
 import com.retailforge.billing.repository.OrderRepository;
 import com.retailforge.billing.repository.PaymentRepository;
 import com.retailforge.billing.util.InvoicePdfGenerator;
+import com.retailforge.billing.exception.*;
+import com.retailforge.billing.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.retailforge.billing.exception.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BillingService {
@@ -35,6 +37,7 @@ public class BillingService {
     private final PaymentRepository paymentRepository;
     private final InvoiceRepository invoiceRepository;
     private final ProductClient productClient;
+    private final BillingEventPublisher eventPublisher;
 
     @Value("${retailforge.business.name:RetailForge}")
     private String businessName;
@@ -53,11 +56,13 @@ public class BillingService {
     public BillingService(OrderRepository orderRepository,
                           PaymentRepository paymentRepository,
                           InvoiceRepository invoiceRepository,
-                          ProductClient productClient) {
+                          ProductClient productClient,
+                          BillingEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
         this.invoiceRepository = invoiceRepository;
         this.productClient = productClient;
+        this.eventPublisher = eventPublisher;
         
         // Ensure invoices directory exists
         try {
@@ -75,15 +80,15 @@ public class BillingService {
             throw new EmptyCartException("Cart cannot be empty for checkout.");
         }
 
-        // 1. Create order skeleton
+        // 1. Create order skeleton in PENDING status
         Order order = new Order();
         order.setOrderNumber("ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        order.setStatus("CREATED");
+        order.setStatus("PENDING");
         order.setCreatedAt(LocalDateTime.now());
         order.setTotalAmount(BigDecimal.ZERO);
 
         BigDecimal totalAmount = BigDecimal.ZERO;
-        Map<Long, ProductDto> productMap = new HashMap<>();
+        List<OrderItemEvent> eventItems = new ArrayList<>();
 
         // 2. Query product catalog and compute GST rates
         for (CartItemRequest itemReq : request.items()) {
@@ -91,8 +96,6 @@ public class BillingService {
             if (product == null) {
                 throw new ProductNotFoundException("Product not found with barcode: " + itemReq.barcode());
             }
-
-            productMap.put(product.id(), product);
 
             BigDecimal unitPrice = product.price();
             BigDecimal gstPercentage = product.gstPercentage();
@@ -115,24 +118,70 @@ public class BillingService {
             orderItem.setGstAmount(itemGstAmount);
 
             order.getItems().add(orderItem);
+            eventItems.add(new OrderItemEvent(product.id(), itemReq.quantity()));
         }
 
         order.setTotalAmount(totalAmount.setScale(2, RoundingMode.HALF_UP));
         Order savedOrder = orderRepository.save(order);
 
-        // 3. Simulate Payment Gateway
+        // 3. Publish Asynchronous ORDER_CREATED event
+        eventPublisher.publishOrderCreated(new OrderCreatedEvent(
+            savedOrder.getId(),
+            savedOrder.getOrderNumber(),
+            request.paymentMethod().toUpperCase(),
+            eventItems
+        ));
+
+        // Return instant response with status PENDING
+        return new CheckoutResponse(
+            savedOrder.getId(),
+            savedOrder.getOrderNumber(),
+            savedOrder.getTotalAmount(),
+            savedOrder.getStatus(),
+            "PENDING", // Payment status PENDING
+            null,      // No transaction ID yet
+            null       // No invoice number yet
+        );
+    }
+
+    @Transactional
+    public void completeOrder(Long orderId, String paymentMethod) {
+        log.info("Completing order ID: {} with payment method: {}", orderId, paymentMethod);
+
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
+
+        if (!"PENDING".equals(order.getStatus())) {
+            log.warn("Order {} is not in PENDING state. Current status: {}", orderId, order.getStatus());
+            return;
+        }
+
+        // 1. Simulate Payment Gateway Success
         Payment payment = new Payment();
-        payment.setOrder(savedOrder);
-        payment.setAmount(savedOrder.getTotalAmount());
-        payment.setMethod(request.paymentMethod().toUpperCase());
+        payment.setOrder(order);
+        payment.setAmount(order.getTotalAmount());
+        payment.setMethod(paymentMethod.toUpperCase());
         payment.setStatus("SUCCESS");
         payment.setTransactionId("TXN-" + UUID.randomUUID().toString().substring(0, 12).toUpperCase());
         Payment savedPayment = paymentRepository.save(payment);
 
-        savedOrder.setStatus("COMPLETED");
-        orderRepository.save(savedOrder);
+        order.setStatus("COMPLETED");
+        Order savedOrder = orderRepository.save(order);
 
-        // 4. Generate PDF Invoice Receipt
+        // 2. Fetch product catalog details for PDF invoice table
+        Map<Long, ProductDto> productMap = new HashMap<>();
+        for (OrderItem item : savedOrder.getItems()) {
+            try {
+                ProductDto product = productClient.getProductById(item.getProductId());
+                if (product != null) {
+                    productMap.put(product.id(), product);
+                }
+            } catch (Exception e) {
+                log.error("Failed to query product details for ID: {}", item.getProductId(), e);
+            }
+        }
+
+        // 3. Generate PDF Invoice Receipt
         String invoiceNumber = "INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         byte[] pdfBytes = InvoicePdfGenerator.generateInvoicePdf(savedOrder, savedPayment, invoiceNumber, productMap,
                 businessName, businessAddress, businessGstin, businessPhone);
@@ -147,22 +196,37 @@ public class BillingService {
             throw new PdfGenerationException("Failed to generate digital invoice PDF");
         }
 
-        // 5. Save Invoice Record
+        // 4. Save Invoice Record
         Invoice invoice = new Invoice();
         invoice.setOrder(savedOrder);
         invoice.setInvoiceNumber(invoiceNumber);
         invoice.setPdfUrl(pdfPathStr);
         invoiceRepository.save(invoice);
 
-        return new CheckoutResponse(
+        // 5. Emit PAYMENT_COMPLETED event
+        eventPublisher.publishPaymentCompleted(new PaymentCompletedEvent(
             savedOrder.getId(),
             savedOrder.getOrderNumber(),
             savedOrder.getTotalAmount(),
-            savedOrder.getStatus(),
-            savedPayment.getStatus(),
             savedPayment.getTransactionId(),
-            invoiceNumber
-        );
+            LocalDateTime.now()
+        ));
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId, String reason) {
+        log.info("Cancelling order ID: {}. Reason: {}", orderId, reason);
+
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + orderId));
+
+        if (!"PENDING".equals(order.getStatus())) {
+            log.warn("Order {} is not in PENDING state. Current status: {}", orderId, order.getStatus());
+            return;
+        }
+
+        order.setStatus("CANCELLED");
+        orderRepository.save(order);
     }
 
     @Transactional(readOnly = true)
@@ -174,12 +238,12 @@ public class BillingService {
             .map(item -> new OrderItemResponse(
                 item.getId(),
                 item.getProductId(),
-                "Product ID: " + item.getProductId(), // Feign client could lookup name if required, or serve placeholder
+                "Product ID: " + item.getProductId(),
                 item.getQuantity(),
                 item.getPrice(),
                 item.getGstAmount()
             ))
-            .toList();
+            .collect(Collectors.toList());
 
         return new OrderResponse(
             order.getId(),

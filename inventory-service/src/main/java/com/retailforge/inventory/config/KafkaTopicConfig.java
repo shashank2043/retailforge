@@ -23,4 +23,36 @@ public class KafkaTopicConfig {
             .replicas(1)
             .build();
     }
+
+    @Bean
+    public NewTopic orderCreatedTopic() {
+        return TopicBuilder.name("order-created")
+            .partitions(3)
+            .replicas(1)
+            .build();
+    }
+
+    @Bean
+    public NewTopic inventoryReservedTopic() {
+        return TopicBuilder.name("inventory-reserved")
+            .partitions(3)
+            .replicas(1)
+            .build();
+    }
+
+    @Bean
+    public NewTopic inventoryFailedTopic() {
+        return TopicBuilder.name("inventory-failed")
+            .partitions(3)
+            .replicas(1)
+            .build();
+    }
+
+    @Bean
+    public NewTopic paymentCompletedTopic() {
+        return TopicBuilder.name("payment-completed")
+            .partitions(3)
+            .replicas(1)
+            .build();
+    }
 }

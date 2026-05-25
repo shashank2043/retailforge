@@ -3,12 +3,16 @@ package com.retailforge.inventory.service;
 import com.retailforge.inventory.dto.*;
 import com.retailforge.inventory.event.LowStockAlertEvent;
 import com.retailforge.inventory.event.StockUpdatedEvent;
+import com.retailforge.inventory.event.OrderCreatedEvent;
+import com.retailforge.inventory.event.OrderItemEvent;
 import com.retailforge.inventory.model.Inventory;
 import com.retailforge.inventory.model.StockTransaction;
 import com.retailforge.inventory.model.Warehouse;
 import com.retailforge.inventory.repository.InventoryRepository;
 import com.retailforge.inventory.repository.StockTransactionRepository;
 import com.retailforge.inventory.repository.WarehouseRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.retailforge.inventory.exception.*;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
+
+    private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
 
     private final InventoryRepository inventoryRepository;
     private final WarehouseRepository warehouseRepository;
@@ -248,6 +254,17 @@ public class InventoryService {
         return transactionRepository.findByWarehouseId(warehouseId).stream()
             .map(tx -> new StockTransactionResponse(tx.getId(), tx.getProductId(), tx.getWarehouseId(), tx.getQuantity(), tx.getType(), tx.getTimestamp()))
             .toList();
+    }
+
+    @Transactional
+    public void reserveStockForOrder(OrderCreatedEvent event) {
+        log.info("Attempting to reserve stock for order: {}", event.orderNumber());
+        // Cashier billing is fulfilled from the retail store warehouse ID: 2
+        Long defaultStoreOutletWarehouseId = 2L;
+
+        for (OrderItemEvent item : event.items()) {
+            reduceStock(item.productId(), defaultStoreOutletWarehouseId, item.quantity());
+        }
     }
 
     private void checkLowStockAlert(Long productId, Long warehouseId, int currentQty) {

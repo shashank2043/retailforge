@@ -11,4 +11,9 @@ public class ProductClientFallback implements ProductClient {
     public ProductDto getProductByBarcode(String barcode) {
         throw new ProductCatalogOfflineException("Product catalog service is currently offline or unreachable. Cannot verify item: " + barcode);
     }
+
+    @Override
+    public ProductDto getProductById(Long id) {
+        throw new ProductCatalogOfflineException("Product catalog service is currently offline or unreachable. Cannot verify item ID: " + id);
+    }
 }

@@ -1,0 +1,10 @@
+package com.retailforge.inventory.event;
+
+import java.util.List;
+
+public record OrderCreatedEvent(
+    Long orderId,
+    String orderNumber,
+    String paymentMethod,
+    List<OrderItemEvent> items
+) {}

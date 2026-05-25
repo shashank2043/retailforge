@@ -10,4 +10,7 @@ public interface ProductClient {
 
     @GetMapping("/products/barcode/{barcode}")
     ProductDto getProductByBarcode(@PathVariable("barcode") String barcode);
+
+    @GetMapping("/products/{id}")
+    ProductDto getProductById(@PathVariable("id") Long id);
 }

@@ -2,6 +2,8 @@ package com.retailforge.inventory.service;
 
 import com.retailforge.inventory.event.LowStockAlertEvent;
 import com.retailforge.inventory.event.StockUpdatedEvent;
+import com.retailforge.inventory.event.InventoryReservedEvent;
+import com.retailforge.inventory.event.InventoryFailedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -26,5 +28,15 @@ public class InventoryEventPublisher {
     public void publishLowStockAlert(LowStockAlertEvent event) {
         log.info("Publishing stock-low-alert event: {}", event);
         kafkaTemplate.send("stock-low-alert", event.productId().toString(), event);
+    }
+
+    public void publishInventoryReserved(InventoryReservedEvent event) {
+        log.info("Publishing inventory-reserved event: {}", event);
+        kafkaTemplate.send("inventory-reserved", event.orderId().toString(), event);
+    }
+
+    public void publishInventoryFailed(InventoryFailedEvent event) {
+        log.info("Publishing inventory-failed event: {}", event);
+        kafkaTemplate.send("inventory-failed", event.orderId().toString(), event);
     }
 }
