@@ -31,6 +31,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST, "/orders/checkout").hasAnyRole("CASHIER", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/orders/*/invoice").hasAnyRole("CASHIER", "ADMIN")
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

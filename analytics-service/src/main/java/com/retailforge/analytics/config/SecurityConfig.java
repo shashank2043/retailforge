@@ -1,9 +1,8 @@
-package com.retailforge.inventory.config;
+package com.retailforge.analytics.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,9 +28,6 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/inventory/warehouses").hasAnyRole("ADMIN", "STORE_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/inventory/add").hasAnyRole("ADMIN", "STORE_MANAGER")
-                .requestMatchers(HttpMethod.POST, "/inventory/transfer").hasAnyRole("ADMIN", "STORE_MANAGER")
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
