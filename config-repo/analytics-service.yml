@@ -36,3 +36,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/retailforge/protocol/openid-connect/certs
+
+springdoc:
+  api-docs:
+    path: /analytics/v3/api-docs

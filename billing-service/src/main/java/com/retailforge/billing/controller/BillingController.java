@@ -5,6 +5,7 @@ import com.retailforge.billing.dto.CheckoutRequest;
 import com.retailforge.billing.dto.CheckoutResponse;
 import com.retailforge.billing.dto.OrderResponse;
 import com.retailforge.billing.service.BillingService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +25,7 @@ public class BillingController {
 
     @PostMapping("/checkout")
     @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN')")
-    public ResponseEntity<ApiResponse<CheckoutResponse>> checkout(@RequestBody CheckoutRequest request) {
+    public ResponseEntity<ApiResponse<CheckoutResponse>> checkout(@Valid @RequestBody CheckoutRequest request) {
         CheckoutResponse response = billingService.checkout(request);
         ApiResponse<CheckoutResponse> apiResponse = new ApiResponse<>(true, "Checkout transaction completed successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);

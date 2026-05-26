@@ -7,38 +7,42 @@ echo This script boots all 8 microservices.
 echo Please ensure that MySQL, Redis, Kafka, and Keycloak are running on default ports.
 echo.
 
-echo [1/8] Starting Eureka Discovery Server (Port 8761)...
+echo [1/8] Start Eureka Discovery Server (Port 8761)?
+choice /c yn /n /m "Start Eureka Discovery Server? [Y/N]: "
+if errorlevel 2 goto skip_eureka
 start "Eureka Discovery Server [8761]" cmd /k "gradlew.bat :eureka-server:bootRun"
-echo Eureka Server has been triggered in a new window.
-echo Wait until Eureka dashboard (http://localhost:8761) is fully active.
-echo.
-choice /c c /n /m "Press [C] to continue and boot Config Server..." > nul
+echo Eureka Discovery Server triggered.
+:skip_eureka
 
 echo.
-echo [2/8] Starting Central Config Server (Port 8888)...
+echo [2/8] Start Central Config Server (Port 8888)?
+choice /c yn /n /m "Start Central Config Server? [Y/N]: "
+if errorlevel 2 goto skip_config
 start "Central Config Server [8888]" cmd /k "gradlew.bat :config-server:bootRun"
-echo Config Server has been triggered in a new window.
-echo Wait until Config Server is healthy and readable at http://localhost:8888/actuator/health.
-echo.
-choice /c c /n /m "Press [C] to continue and boot API Gateway..." > nul
+echo Central Config Server triggered.
+:skip_config
 
 echo.
-echo [3/8] Starting API Gateway (Port 8081)...
+echo [3/8] Start API Gateway (Port 8081)?
+choice /c yn /n /m "Start API Gateway? [Y/N]: "
+if errorlevel 2 goto skip_gateway
 start "API Gateway [8081]" cmd /k "gradlew.bat :api-gateway:bootRun"
-echo API Gateway has been triggered in a new window.
-echo Wait for Gateway routing services to bind.
-echo.
+echo API Gateway triggered.
+:skip_gateway
 
+echo.
 echo -----------------------------------------------------------------------
-echo Infrastructure services (Eureka, Config, Gateway) have been started!
+echo Infrastructure services (Eureka, Config, Gateway) have been processed.
 echo -----------------------------------------------------------------------
 echo How would you like to start the remaining 5 core microservices?
 echo.
 echo [1] Start ALL remaining microservices at once (parallel)
 echo [2] Start remaining microservices ONE-BY-ONE (requires individual confirmation)
+echo [3] Skip remaining and Exit
 echo.
 
-choice /c 12 /n /m "Select your starting method (1 or 2): "
+choice /c 123 /n /m "Select your starting method (1, 2 or 3): "
+if errorlevel 3 goto end
 if errorlevel 2 goto onebyone
 if errorlevel 1 goto allatonce
 
@@ -46,6 +50,7 @@ if errorlevel 1 goto allatonce
 echo.
 echo Starting remaining microservices in parallel...
 echo.
+
 echo Starting Product Catalog Service (Port 8082)...
 start "Product Catalog Service [8082]" cmd /k "gradlew.bat :product-service:bootRun"
 

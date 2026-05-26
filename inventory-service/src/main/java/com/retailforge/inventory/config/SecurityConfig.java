@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/inventory/add").hasAnyRole("ADMIN", "STORE_MANAGER")
                 .requestMatchers(HttpMethod.POST, "/inventory/transfer").hasAnyRole("ADMIN", "STORE_MANAGER")
                 .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/inventory/v3/api-docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

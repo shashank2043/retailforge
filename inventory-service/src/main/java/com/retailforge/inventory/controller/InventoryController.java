@@ -3,6 +3,7 @@ package com.retailforge.inventory.controller;
 import com.retailforge.api.response.ApiResponse;
 import com.retailforge.inventory.dto.*;
 import com.retailforge.inventory.service.InventoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +23,7 @@ public class InventoryController {
 
     @PostMapping("/warehouses")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<WarehouseResponse>> createWarehouse(@RequestBody WarehouseRequest request) {
+    public ResponseEntity<ApiResponse<WarehouseResponse>> createWarehouse(@Valid @RequestBody WarehouseRequest request) {
         WarehouseResponse response = inventoryService.createWarehouse(request);
         ApiResponse<WarehouseResponse> apiResponse = new ApiResponse<>(true, "Warehouse created successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -38,7 +39,7 @@ public class InventoryController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<InventoryResponse>> addStock(@RequestBody AddStockRequest request) {
+    public ResponseEntity<ApiResponse<InventoryResponse>> addStock(@Valid @RequestBody AddStockRequest request) {
         InventoryResponse response = inventoryService.addStock(request);
         ApiResponse<InventoryResponse> apiResponse = new ApiResponse<>(true, "Stock replenished successfully.", response);
         return ResponseEntity.ok(apiResponse);
@@ -46,7 +47,7 @@ public class InventoryController {
 
     @PostMapping("/transfer")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<List<InventoryResponse>>> transferStock(@RequestBody TransferStockRequest request) {
+    public ResponseEntity<ApiResponse<List<InventoryResponse>>> transferStock(@Valid @RequestBody TransferStockRequest request) {
         List<InventoryResponse> response = inventoryService.transferStock(request);
         ApiResponse<List<InventoryResponse>> apiResponse = new ApiResponse<>(true, "Stock transfer completed atomically.", response);
         return ResponseEntity.ok(apiResponse);

@@ -33,3 +33,27 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8080/realms/retailforge/protocol/openid-connect/certs
+  threads:
+    virtual:
+      enabled: false
+
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    oauth:
+      clientId: retailforge-api-gateway
+      clientSecret: wwUCtFsgR4rEKMnf2eiZOccU2rBQTT1w
+      realm: retailforge
+      appName: API Gateway Swagger UI
+      usePkceWithAuthorizationCodeGrant: true
+    urls:
+      - name: Product Service
+        url: /products/v3/api-docs
+      - name: Inventory Service
+        url: /inventory/v3/api-docs
+      - name: Billing Service
+        url: /orders/v3/api-docs
+      - name: Analytics Service
+        url: /analytics/v3/api-docs
+

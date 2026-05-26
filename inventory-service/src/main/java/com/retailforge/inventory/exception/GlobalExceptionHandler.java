@@ -40,6 +40,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+        String errors = ex.getBindingResult().getFieldErrors().stream()
+            .map(org.springframework.validation.FieldError::getDefaultMessage)
+            .collect(java.util.stream.Collectors.joining(" "));
+        ApiResponse<Void> response = new ApiResponse<>(false, "Validation failed: " + errors, null);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
         ApiResponse<Void> response = new ApiResponse<>(false, ex.getMessage(), null);

@@ -4,4 +4,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:3.0.2'
 }

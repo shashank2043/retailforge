@@ -42,3 +42,8 @@ retailforge:
     address: "1-32, Gachibowli, Hyderabad, 500032"
     gstin: "36AAAAA1111A1Z1"
     phone: "+91-40-12345678"
+
+springdoc:
+  api-docs:
+    path: /orders/v3/api-docs
+

@@ -6,3 +6,9 @@ spring:
     name: api-gateway
   config:
     import: optional:configserver:http://localhost:8888
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/retailforge/protocol/openid-connect/certs
+

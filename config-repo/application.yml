@@ -21,3 +21,9 @@ logging:
       springframework:
         security: DEBUG
         security.oauth2: DEBUG
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+

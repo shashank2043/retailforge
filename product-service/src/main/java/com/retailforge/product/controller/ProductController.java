@@ -6,6 +6,7 @@ import com.retailforge.product.dto.CategoryResponse;
 import com.retailforge.product.dto.ProductRequest;
 import com.retailforge.product.dto.ProductResponse;
 import com.retailforge.product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +26,7 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@RequestBody ProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@Valid @RequestBody ProductRequest request) {
         ProductResponse response = productService.addProduct(request);
         ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product added successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
@@ -33,7 +34,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @RequestBody ProductRequest request) {
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
         ProductResponse response = productService.updateProduct(id, request);
         ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product updated successfully.", response);
         return ResponseEntity.ok(apiResponse);
@@ -65,7 +66,7 @@ public class ProductController {
 
     @PostMapping("/categories")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<CategoryResponse>> addCategory(@RequestBody CategoryRequest request) {
+    public ResponseEntity<ApiResponse<CategoryResponse>> addCategory(@Valid @RequestBody CategoryRequest request) {
         CategoryResponse response = productService.addCategory(request);
         ApiResponse<CategoryResponse> apiResponse = new ApiResponse<>(true, "Category created successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
