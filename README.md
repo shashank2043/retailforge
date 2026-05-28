@@ -1,8 +1,8 @@
 # Smart Retail Billing & Inventory System (RetailForge)
 
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.x-brightgreen)](https://spring.io/projects/spring-boot)
 [![Microservices](https://img.shields.io/badge/Architecture-Microservices-blue)](https://microservices.io/)
-[![Java](https://img.shields.io/badge/Java-17%2B-orange)](https://www.oracle.com/java/)
+[![Java](https://img.shields.io/badge/Java-21%2B-orange)](https://www.oracle.com/java/)
 [![MySQL](https://img.shields.io/badge/Database-MySQL-blue)](https://www.mysql.com/)
 [![Kafka](https://img.shields.io/badge/Messaging-Apache%20Kafka-black)](https://kafka.apache.org/)
 [![Redis](https://img.shields.io/badge/Cache-Redis-red)](https://redis.io/)
