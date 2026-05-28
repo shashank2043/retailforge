@@ -87,6 +87,19 @@ public class BillingService {
         order.setCreatedAt(LocalDateTime.now());
         order.setTotalAmount(BigDecimal.ZERO);
 
+        String customerEmail = "placeholder_customer@gmail.com";
+        try {
+            var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (authentication instanceof org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken jwtAuth) {
+                customerEmail = jwtAuth.getToken().getClaimAsString("email");
+            } else if (authentication != null && authentication.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+                customerEmail = jwt.getClaimAsString("email");
+            }
+        } catch (Exception e) {
+            log.warn("Failed to extract customer email from JWT context: {}", e.getMessage());
+        }
+        order.setCustomerEmail(customerEmail);
+
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<OrderItemEvent> eventItems = new ArrayList<>();
 
@@ -209,7 +222,8 @@ public class BillingService {
             savedOrder.getOrderNumber(),
             savedOrder.getTotalAmount(),
             savedPayment.getTransactionId(),
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            savedOrder.getCustomerEmail() != null ? savedOrder.getCustomerEmail() : "placeholder_customer@gmail.com"
         ));
     }
 

@@ -16,18 +16,34 @@ spring:
               uri: lb://product-service
               predicates:
                 - Path=/products/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: productServiceCircuitBreaker
             - id: inventory-service
               uri: lb://inventory-service
               predicates:
                 - Path=/inventory/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: inventoryServiceCircuitBreaker
             - id: billing-service
               uri: lb://billing-service
               predicates:
                 - Path=/orders/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: billingServiceCircuitBreaker
             - id: analytics-service
               uri: lb://analytics-service
               predicates:
                 - Path=/analytics/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: analyticsServiceCircuitBreaker
   security:
     oauth2:
       resourceserver:

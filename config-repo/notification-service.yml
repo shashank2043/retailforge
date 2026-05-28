@@ -9,3 +9,15 @@ spring:
         spring:
           json:
             trusted.packages: "*"
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${NOTIFICATION_GMAIL_USERNAME:placeholder_email@gmail.com}
+    password: ${NOTIFICATION_GMAIL_PASSWORD:placeholder_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true

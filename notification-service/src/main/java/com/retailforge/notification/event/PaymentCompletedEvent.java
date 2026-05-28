@@ -8,5 +8,6 @@ public record PaymentCompletedEvent(
     String orderNumber,
     BigDecimal totalAmount,
     String transactionId,
-    LocalDateTime completedAt
+    LocalDateTime completedAt,
+    String customerEmail
 ) {}
