@@ -39,3 +39,4 @@ out/
 /.antigravitycli/
 /.env
 /billing-service/billing-service/invoices/
+/billing-service/invoices/
