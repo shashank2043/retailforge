@@ -7,6 +7,7 @@
 [![Kafka](https://img.shields.io/badge/Messaging-Apache%20Kafka-black)](https://kafka.apache.org/)
 [![Redis](https://img.shields.io/badge/Cache-Redis-red)](https://redis.io/)
 [![Keycloak](https://img.shields.io/badge/Security-Keycloak-yellow)](https://www.keycloak.org/)
+[![Zipkin](https://img.shields.io/badge/Tracing-Zipkin-orange)](https://zipkin.io/)
 
 RetailForge is an enterprise-grade, scalable retail backend platform designed for supermarkets, retail chains, and wholesale stores. It leverages a microservices architecture to handle high-volume billing, real-time inventory synchronization, and complex sales analytics.
 
@@ -16,6 +17,7 @@ RetailForge is an enterprise-grade, scalable retail backend platform designed fo
 - **Real-time Inventory Management:** Atomic stock updates with optimistic locking to prevent overselling across multiple counters.
 - **GST-Compliant Invoicing:** Automated PDF generation of tax invoices with detailed GST breakdowns.
 - **Event-Driven Architecture:** Asynchronous communication via Kafka for decoupled service interactions.
+- **Distributed Tracing:** Full request lifecycle visibility across microservices using Micrometer Tracing and Zipkin.
 - **Sales Analytics:** Real-time dashboards for revenue, tax collection, and product performance trends.
 - **Distributed Consistency:** Implementation of the Saga Pattern to maintain data integrity across services.
 - **Secure Access Control:** Centralized authentication and role-based authorization (RBAC) via Keycloak.
@@ -46,6 +48,7 @@ The system follows a microservices architecture pattern, with each service respo
 - **Caching:** Redis
 - **Database:** MySQL
 - **Identity Provider:** Keycloak (OIDC/JWT)
+- **Distributed Tracing:** Zipkin
 - **Containerization:** Docker & Docker Compose
 - **Monitoring:** Prometheus & Grafana
 - **Build Tool:** Gradle
@@ -58,13 +61,14 @@ Ensure you have the following installed and running on their default ports:
 - **Redis** (Default: 6379)
 - **Apache Kafka** (Default: 9092)
 - **Keycloak** (Default: 8080)
+- **Zipkin** (Default: 9411)
 - **Gradle**
 
 ## 🏁 Getting Started
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/retailforge.git
+git clone https://github.com/shashank2043/retailforge.git
 cd retailforge
 ```
 
@@ -101,6 +105,7 @@ Authentication and Authorization are managed through Keycloak.
 ## 📈 Monitoring
 
 - **Eureka Dashboard:** [http://localhost:8761](http://localhost:8761)
+- **Zipkin Tracing:** [http://localhost:9411](http://localhost:9411)
 - **Prometheus Metrics:** [http://localhost:9090](http://localhost:9090) (if configured)
 - **Grafana Visualization:** [http://localhost:3000](http://localhost:3000) (if configured)
 
