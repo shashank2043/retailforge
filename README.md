@@ -53,10 +53,10 @@ The system follows a microservices architecture pattern, with each service respo
 ## 🚦 Prerequisites
 
 Ensure you have the following installed and running on their default ports:
-- **Java 17+**
+- **Java 21+**
 - **MySQL** (Default: 3306)
 - **Redis** (Default: 6379)
-- **Apache Kafka & Zookeeper** (Default: 9092, 2181)
+- **Apache Kafka** (Default: 9092)
 - **Keycloak** (Default: 8080)
 - **Gradle**
 
