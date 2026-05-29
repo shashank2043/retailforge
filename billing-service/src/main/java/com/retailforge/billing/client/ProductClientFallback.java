@@ -1,5 +1,6 @@
 package com.retailforge.billing.client;
 
+import com.retailforge.api.response.ApiResponse;
 import com.retailforge.billing.dto.ProductDto;
 import com.retailforge.billing.exception.ProductCatalogOfflineException;
 import org.springframework.stereotype.Component;
@@ -8,12 +9,12 @@ import org.springframework.stereotype.Component;
 public class ProductClientFallback implements ProductClient {
 
     @Override
-    public ProductDto getProductByBarcode(String barcode) {
+    public ApiResponse<ProductDto> getProductByBarcode(String barcode) {
         throw new ProductCatalogOfflineException("Product catalog service is currently offline or unreachable. Cannot verify item: " + barcode);
     }
 
     @Override
-    public ProductDto getProductById(Long id) {
+    public ApiResponse<ProductDto> getProductById(Long id) {
         throw new ProductCatalogOfflineException("Product catalog service is currently offline or unreachable. Cannot verify item ID: " + id);
     }
 }

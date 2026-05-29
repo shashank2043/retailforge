@@ -259,11 +259,18 @@ public class InventoryService {
     @Transactional
     public void reserveStockForOrder(OrderCreatedEvent event) {
         log.info("Attempting to reserve stock for order: {}", event.orderNumber());
-        // Cashier billing is fulfilled from the retail store warehouse ID: 2
-        Long defaultStoreOutletWarehouseId = 2L;
 
         for (OrderItemEvent item : event.items()) {
-            reduceStock(item.productId(), defaultStoreOutletWarehouseId, item.quantity());
+            List<Inventory> inventories = inventoryRepository.findByProductId(item.productId());
+            
+            // Find first warehouse that has enough quantity
+            Inventory targetInventory = inventories.stream()
+                .filter(inv -> inv.getQuantity() >= item.quantity())
+                .findFirst()
+                .orElseThrow(() -> new InsufficientStockException("No warehouse has sufficient stock for product ID: " + item.productId()));
+
+            log.info("Reserving {} units for product {} from warehouse {}", item.quantity(), item.productId(), targetInventory.getWarehouseId());
+            reduceStock(item.productId(), targetInventory.getWarehouseId(), item.quantity());
         }
     }
 

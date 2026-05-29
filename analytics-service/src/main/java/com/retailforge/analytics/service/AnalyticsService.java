@@ -31,28 +31,12 @@ public class AnalyticsService {
     }
 
     @Transactional
-    public void processPaymentCompleted(Long orderId, BigDecimal amount) {
+    public void processPaymentCompleted(Long orderId, BigDecimal amount, BigDecimal gstTotal) {
         log.info("Processing sales telemetry for order ID: {}", orderId);
         LocalDate today = LocalDate.now();
 
-        BigDecimal gstTotal = BigDecimal.ZERO;
-
-        try {
-            ApiResponse<OrderResponse> responseEnvelope = billingClient.getOrderDetails(orderId);
-            if (responseEnvelope != null && responseEnvelope.isSuccess() && responseEnvelope.getData() != null) {
-                OrderResponse order = responseEnvelope.getData();
-                if (order.items() != null) {
-                    for (OrderItemResponse item : order.items()) {
-                        if (item.gstAmount() != null) {
-                            gstTotal = gstTotal.add(item.gstAmount());
-                        }
-                    }
-                }
-            } else {
-                log.warn("Could not retrieve full order details for order ID: {}. Operating with zero GST defaults.", orderId);
-            }
-        } catch (Exception e) {
-            log.error("Failed to query order details for order ID: {}. Error: {}", orderId, e.getMessage());
+        if (gstTotal == null) {
+            gstTotal = BigDecimal.ZERO;
         }
 
         // CGST and SGST are split 50/50 of the total GST

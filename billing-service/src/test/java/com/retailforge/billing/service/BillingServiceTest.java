@@ -1,5 +1,6 @@
 package com.retailforge.billing.service;
 
+import com.retailforge.api.response.ApiResponse;
 import com.retailforge.billing.client.ProductClient;
 import com.retailforge.billing.dto.*;
 import com.retailforge.billing.event.OrderCreatedEvent;
@@ -97,7 +98,7 @@ public class BillingServiceTest {
     @Test
     public void testCheckout_Success() {
         CheckoutRequest request = new CheckoutRequest("CASH", List.of(new CartItemRequest("9876543210", 1)));
-        when(productClient.getProductByBarcode("9876543210")).thenReturn(productDto);
+        when(productClient.getProductByBarcode("9876543210")).thenReturn(new ApiResponse<>(true, "Success", productDto));
         when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
             Order o = invocation.getArgument(0);
             o.setId(1L);
@@ -124,7 +125,7 @@ public class BillingServiceTest {
     @Test
     public void testCheckout_ProductNotFound() {
         CheckoutRequest request = new CheckoutRequest("CASH", List.of(new CartItemRequest("9876543210", 1)));
-        when(productClient.getProductByBarcode("9876543210")).thenReturn(null);
+        when(productClient.getProductByBarcode("9876543210")).thenReturn(new ApiResponse<>(false, "Not Found", null));
 
         assertThrows(ProductNotFoundException.class, () -> billingService.checkout(request));
     }
@@ -134,7 +135,7 @@ public class BillingServiceTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
-        when(productClient.getProductById(100L)).thenReturn(productDto);
+        when(productClient.getProductById(100L)).thenReturn(new ApiResponse<>(true, "Success", productDto));
 
         billingService.completeOrder(1L, "CASH");
 

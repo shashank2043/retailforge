@@ -1,5 +1,6 @@
 package com.retailforge.billing.service;
 
+import com.retailforge.api.response.ApiResponse;
 import com.retailforge.billing.client.ProductClient;
 import com.retailforge.billing.dto.*;
 import com.retailforge.billing.model.Invoice;
@@ -105,11 +106,12 @@ public class BillingService {
 
         // 2. Query product catalog and compute GST rates
         for (CartItemRequest itemReq : request.items()) {
-            ProductDto product = productClient.getProductByBarcode(itemReq.barcode());
+            ApiResponse<ProductDto> productRes = productClient.getProductByBarcode(itemReq.barcode());
+            ProductDto product = (productRes != null && productRes.isSuccess()) ? productRes.getData() : null;
+
             if (product == null) {
                 throw new ProductNotFoundException("Product not found with barcode: " + itemReq.barcode());
             }
-
             BigDecimal unitPrice = product.price();
             BigDecimal gstPercentage = product.gstPercentage();
 
@@ -183,9 +185,15 @@ public class BillingService {
 
         // 2. Fetch product catalog details for PDF invoice table
         Map<Long, ProductDto> productMap = new HashMap<>();
+        BigDecimal totalGstAmount = BigDecimal.ZERO;
         for (OrderItem item : savedOrder.getItems()) {
+            if (item.getGstAmount() != null) {
+                totalGstAmount = totalGstAmount.add(item.getGstAmount());
+            }
             try {
-                ProductDto product = productClient.getProductById(item.getProductId());
+                ApiResponse<ProductDto> productRes = productClient.getProductById(item.getProductId());
+                ProductDto product = (productRes != null && productRes.isSuccess()) ? productRes.getData() : null;
+                
                 if (product != null) {
                     productMap.put(product.id(), product);
                 }
@@ -221,6 +229,7 @@ public class BillingService {
             savedOrder.getId(),
             savedOrder.getOrderNumber(),
             savedOrder.getTotalAmount(),
+            totalGstAmount,
             savedPayment.getTransactionId(),
             LocalDateTime.now(),
             savedOrder.getCustomerEmail() != null ? savedOrder.getCustomerEmail() : "placeholder_customer@gmail.com"

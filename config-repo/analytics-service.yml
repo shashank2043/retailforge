@@ -31,6 +31,7 @@ spring:
         spring:
           json:
             trusted.packages: "*"
+            type.mapping: "com.retailforge.billing.event.PaymentCompletedEvent:com.retailforge.analytics.event.PaymentCompletedEvent"
   security:
     oauth2:
       resourceserver:

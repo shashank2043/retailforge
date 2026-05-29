@@ -29,7 +29,7 @@ public class E2EIntegrationTest {
 
     @Test
     public void testFullTransactionalPipelineE2E() throws Exception {
-        log.info("Starting Day 5 E2E Transactional Pipeline Regression Tests...");
+        log.info("E2E Transactional Pipeline Regression Tests...");
 
         // 1. Simulate Fetching access token from Keycloak (Dummy token if Keycloak not running in test)
         String token = "TEST_MOCK_JWT_TOKEN";

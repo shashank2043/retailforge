@@ -24,7 +24,7 @@ public class AnalyticsListener {
     public void consumePaymentCompleted(PaymentCompletedEvent event) {
         log.info("Received payment-completed event for order: {}. Evicting dashboard cache.", event.orderNumber());
         try {
-            analyticsService.processPaymentCompleted(event.orderId(), event.totalAmount());
+            analyticsService.processPaymentCompleted(event.orderId(), event.totalAmount(), event.totalGstAmount());
         } catch (Exception e) {
             log.error("Failed to process payment telemetry for order ID: {}", event.orderId(), e);
         }

@@ -47,6 +47,7 @@ public class NotificationListener {
         log.info("Order Number: {}", event.orderNumber());
         log.info("Transaction ID: {}", event.transactionId());
         log.info("Amount Paid: INR {}", event.totalAmount());
+        log.info("Total GST: INR {}", event.totalGstAmount());
         log.info("Completed At: {}", event.completedAt());
         log.info("Customer Email: {}", event.customerEmail());
         log.info("============================");
