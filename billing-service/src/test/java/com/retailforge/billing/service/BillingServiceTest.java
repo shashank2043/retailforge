@@ -81,6 +81,7 @@ public class BillingServiceTest {
         item.setId(10L);
         item.setOrder(order);
         item.setProductId(100L);
+        item.setProductName("Mango Juice");
         item.setQuantity(1);
         item.setPrice(BigDecimal.valueOf(2.50));
         item.setGstAmount(BigDecimal.valueOf(0.45));
@@ -135,7 +136,6 @@ public class BillingServiceTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
         when(orderRepository.save(any(Order.class))).thenReturn(order);
-        when(productClient.getProductById(100L)).thenReturn(new ApiResponse<>(true, "Success", productDto));
 
         billingService.completeOrder(1L, "CASH");
 

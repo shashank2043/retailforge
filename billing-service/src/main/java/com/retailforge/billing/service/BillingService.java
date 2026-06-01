@@ -128,6 +128,7 @@ public class BillingService {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProductId(product.id());
+            orderItem.setProductName(product.name());
             orderItem.setQuantity(itemReq.quantity());
             orderItem.setPrice(unitPrice);
             orderItem.setGstAmount(itemGstAmount);
@@ -190,16 +191,16 @@ public class BillingService {
             if (item.getGstAmount() != null) {
                 totalGstAmount = totalGstAmount.add(item.getGstAmount());
             }
-            try {
-                ApiResponse<ProductDto> productRes = productClient.getProductById(item.getProductId());
-                ProductDto product = (productRes != null && productRes.isSuccess()) ? productRes.getData() : null;
-                
-                if (product != null) {
-                    productMap.put(product.id(), product);
-                }
-            } catch (Exception e) {
-                log.error("Failed to query product details for ID: {}", item.getProductId(), e);
-            }
+            // Use stored data to avoid 401 Unauthorized errors in background threads
+            ProductDto placeholderProduct = new ProductDto(
+                item.getProductId(),
+                null,
+                item.getProductName(),
+                item.getPrice(),
+                null,
+                null
+            );
+            productMap.put(item.getProductId(), placeholderProduct);
         }
 
         // 3. Generate PDF Invoice Receipt

@@ -20,6 +20,9 @@ public class OrderItem {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
+    @Column(name = "product_name")
+    private String productName;
+
     @Column(nullable = false)
     private Integer quantity;
 
@@ -32,10 +35,11 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Long id, Order order, Long productId, Integer quantity, BigDecimal price, BigDecimal gstAmount) {
+    public OrderItem(Long id, Order order, Long productId, String productName, Integer quantity, BigDecimal price, BigDecimal gstAmount) {
         this.id = id;
         this.order = order;
         this.productId = productId;
+        this.productName = productName;
         this.quantity = quantity;
         this.price = price;
         this.gstAmount = gstAmount;
@@ -63,6 +67,14 @@ public class OrderItem {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Integer getQuantity() {

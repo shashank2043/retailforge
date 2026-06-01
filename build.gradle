@@ -46,6 +46,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-zipkin'
         implementation 'org.springframework.boot:spring-boot-micrometer-tracing-brave'
         implementation 'io.github.openfeign:feign-micrometer'
+        implementation 'org.springframework.kafka:spring-kafka'
     }
 
     tasks.named('test') {

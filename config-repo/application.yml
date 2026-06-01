@@ -32,6 +32,11 @@ spring:
   threads:
     virtual:
       enabled: true
+  kafka:
+    producer:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
   cloud:
     openfeign:
       circuitbreaker:

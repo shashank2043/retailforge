@@ -5,6 +5,9 @@ import com.retailforge.billing.dto.CheckoutRequest;
 import com.retailforge.billing.dto.CheckoutResponse;
 import com.retailforge.billing.dto.OrderResponse;
 import com.retailforge.billing.service.BillingService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,7 +42,16 @@ public class BillingController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/{id}/invoice")
+    @Operation(summary = "Download Invoice PDF", description = "Retrieves the generated PDF invoice for a specific order.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+        responseCode = "200", 
+        description = "A PDF file download", 
+        content = @Content(
+            mediaType = "application/pdf", 
+            schema = @Schema(type = "string", format = "binary")
+        )
+    )
+    @GetMapping(value = "/{id}/invoice", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN')")
     public ResponseEntity<byte[]> getInvoicePdf(@PathVariable Long id) {
         byte[] pdfBytes = billingService.getInvoicePdfBytes(id);
