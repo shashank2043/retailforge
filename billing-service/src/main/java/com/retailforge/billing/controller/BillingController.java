@@ -3,7 +3,7 @@ package com.retailforge.billing.controller;
 import com.retailforge.api.response.ApiResponse;
 import com.retailforge.billing.dto.CheckoutRequest;
 import com.retailforge.billing.dto.CheckoutResponse;
-import com.retailforge.billing.dto.OrderResponse;
+import com.retailforge.dto.OrderResponse;
 import com.retailforge.billing.service.BillingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -2,7 +2,7 @@ package com.retailforge.analytics.client;
 
 import com.retailforge.analytics.config.FeignClientConfig;
 import com.retailforge.api.response.ApiResponse;
-import com.retailforge.analytics.dto.OrderResponse;
+import com.retailforge.dto.OrderResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

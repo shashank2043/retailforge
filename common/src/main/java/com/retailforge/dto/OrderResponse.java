@@ -1,4 +1,4 @@
-package com.retailforge.billing.dto;
+package com.retailforge.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

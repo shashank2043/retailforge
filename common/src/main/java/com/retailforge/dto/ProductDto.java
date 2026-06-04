@@ -1,13 +1,13 @@
-package com.retailforge.product.dto;
+package com.retailforge.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public record ProductResponse(
+public record ProductDto(
     Long id,
     String barcode,
     String name,
     BigDecimal price,
     BigDecimal gstPercentage,
-    CategoryResponse category
+    CategoryDto category
 ) implements Serializable {}

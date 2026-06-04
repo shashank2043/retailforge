@@ -1,10 +1,10 @@
 package com.retailforge.inventory.service;
 
 import com.retailforge.inventory.dto.*;
-import com.retailforge.inventory.event.LowStockAlertEvent;
+import com.retailforge.event.LowStockAlertEvent;
 import com.retailforge.inventory.event.StockUpdatedEvent;
-import com.retailforge.inventory.event.OrderCreatedEvent;
-import com.retailforge.inventory.event.OrderItemEvent;
+import com.retailforge.event.OrderCreatedEvent;
+import com.retailforge.event.OrderItemEvent;
 import com.retailforge.inventory.model.Inventory;
 import com.retailforge.inventory.model.StockTransaction;
 import com.retailforge.inventory.model.Warehouse;

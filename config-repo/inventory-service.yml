@@ -30,7 +30,7 @@ spring:
         spring:
           json:
             trusted.packages: "*"
-            type.mapping: "com.retailforge.billing.event.OrderCreatedEvent:com.retailforge.inventory.event.OrderCreatedEvent"
+            type.mapping: "com.retailforge.event.OrderCreatedEvent:com.retailforge.event.OrderCreatedEvent"
   security:
     oauth2:
       resourceserver:

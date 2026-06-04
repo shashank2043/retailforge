@@ -2,7 +2,7 @@ package com.retailforge.billing.client;
 
 import com.retailforge.api.response.ApiResponse;
 import com.retailforge.billing.config.FeignClientConfig;
-import com.retailforge.billing.dto.ProductDto;
+import com.retailforge.dto.ProductDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

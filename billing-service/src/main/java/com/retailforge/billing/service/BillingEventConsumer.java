@@ -1,7 +1,7 @@
 package com.retailforge.billing.service;
 
-import com.retailforge.billing.event.InventoryFailedEvent;
-import com.retailforge.billing.event.InventoryReservedEvent;
+import com.retailforge.event.InventoryFailedEvent;
+import com.retailforge.event.InventoryReservedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

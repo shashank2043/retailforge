@@ -1,4 +1,4 @@
-package com.retailforge.notification.event;
+package com.retailforge.event;
 
 import java.time.LocalDateTime;
 

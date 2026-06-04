@@ -1,6 +1,6 @@
 package com.retailforge.analytics.listener;
 
-import com.retailforge.analytics.event.PaymentCompletedEvent;
+import com.retailforge.event.PaymentCompletedEvent;
 import com.retailforge.analytics.service.AnalyticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

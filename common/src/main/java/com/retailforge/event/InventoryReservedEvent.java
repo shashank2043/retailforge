@@ -1,4 +1,4 @@
-package com.retailforge.billing.event;
+package com.retailforge.event;
 
 public record InventoryReservedEvent(
     Long orderId,

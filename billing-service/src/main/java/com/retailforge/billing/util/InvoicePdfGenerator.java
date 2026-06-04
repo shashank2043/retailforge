@@ -2,7 +2,7 @@ package com.retailforge.billing.util;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
-import com.retailforge.billing.dto.ProductDto;
+import com.retailforge.dto.ProductDto;
 import com.retailforge.billing.model.Order;
 import com.retailforge.billing.model.OrderItem;
 import com.retailforge.billing.model.Payment;

@@ -35,7 +35,7 @@ spring:
         spring:
           json:
             trusted.packages: "*"
-            type.mapping: "com.retailforge.inventory.event.InventoryReservedEvent:com.retailforge.billing.event.InventoryReservedEvent,com.retailforge.inventory.event.InventoryFailedEvent:com.retailforge.billing.event.InventoryFailedEvent"
+            type.mapping: "com.retailforge.event.InventoryReservedEvent:com.retailforge.event.InventoryReservedEvent,com.retailforge.event.InventoryFailedEvent:com.retailforge.event.InventoryFailedEvent"
 
 retailforge:
   business:

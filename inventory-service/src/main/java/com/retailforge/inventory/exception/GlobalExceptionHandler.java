@@ -1,6 +1,7 @@
 package com.retailforge.inventory.exception;
 
 import com.retailforge.api.response.ApiResponse;
+import com.retailforge.exception.BaseGlobalExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends BaseGlobalExceptionHandler {
 
     @ExceptionHandler({WarehouseNotFoundException.class, InventoryNotFoundException.class})
     public ResponseEntity<ApiResponse<Void>> handleNotFoundExceptions(InventoryServiceException ex) {
@@ -38,20 +39,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleOptimisticLockingFailureException(ObjectOptimisticLockingFailureException ex) {
         ApiResponse<Void> response = new ApiResponse<>(false, "The stock record was modified by another request. Please retry your operation.", null);
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(org.springframework.web.bind.MethodArgumentNotValidException ex) {
-        String errors = ex.getBindingResult().getFieldErrors().stream()
-            .map(org.springframework.validation.FieldError::getDefaultMessage)
-            .collect(java.util.stream.Collectors.joining(" "));
-        ApiResponse<Void> response = new ApiResponse<>(false, "Validation failed: " + errors, null);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
-        ApiResponse<Void> response = new ApiResponse<>(false, ex.getMessage(), null);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

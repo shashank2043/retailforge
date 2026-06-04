@@ -1,8 +1,8 @@
 package com.retailforge.inventory.service;
 
-import com.retailforge.inventory.event.InventoryFailedEvent;
-import com.retailforge.inventory.event.InventoryReservedEvent;
-import com.retailforge.inventory.event.OrderCreatedEvent;
+import com.retailforge.event.InventoryFailedEvent;
+import com.retailforge.event.InventoryReservedEvent;
+import com.retailforge.event.OrderCreatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

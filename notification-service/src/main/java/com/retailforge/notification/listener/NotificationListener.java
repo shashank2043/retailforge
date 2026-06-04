@@ -1,7 +1,7 @@
 package com.retailforge.notification.listener;
 
-import com.retailforge.notification.event.LowStockAlertEvent;
-import com.retailforge.notification.event.PaymentCompletedEvent;
+import com.retailforge.event.LowStockAlertEvent;
+import com.retailforge.event.PaymentCompletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

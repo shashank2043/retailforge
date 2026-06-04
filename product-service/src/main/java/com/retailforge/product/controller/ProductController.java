@@ -1,10 +1,10 @@
 package com.retailforge.product.controller;
 
 import com.retailforge.api.response.ApiResponse;
+import com.retailforge.dto.CategoryDto;
+import com.retailforge.dto.ProductDto;
 import com.retailforge.product.dto.CategoryRequest;
-import com.retailforge.product.dto.CategoryResponse;
 import com.retailforge.product.dto.ProductRequest;
-import com.retailforge.product.dto.ProductResponse;
 import com.retailforge.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,57 +26,41 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@Valid @RequestBody ProductRequest request) {
-        ProductResponse response = productService.addProduct(request);
-        ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product added successfully.", response);
+    public ResponseEntity<ApiResponse<ProductDto>> addProduct(@Valid @RequestBody ProductRequest request) {
+        ProductDto response = productService.createProduct(request);
+        ApiResponse<ProductDto> apiResponse = new ApiResponse<>(true, "Product added successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
-        ProductResponse response = productService.updateProduct(id, request);
-        ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product updated successfully.", response);
-        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/barcode/{barcode}")
     @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductByBarcode(@PathVariable String barcode) {
-        ProductResponse response = productService.getProductByBarcode(barcode);
-        ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product barcode query successful.", response);
-        return ResponseEntity.ok(apiResponse);
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<ProductResponse>> getProductById(@PathVariable Long id) {
-        ProductResponse response = productService.getProductById(id);
-        ApiResponse<ProductResponse> apiResponse = new ApiResponse<>(true, "Product lookup successful.", response);
+    public ResponseEntity<ApiResponse<ProductDto>> getProductByBarcode(@PathVariable String barcode) {
+        ProductDto response = productService.getProductByBarcode(barcode);
+        ApiResponse<ProductDto> apiResponse = new ApiResponse<>(true, "Product barcode query successful.", response);
         return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts() {
-        List<ProductResponse> response = productService.getAllProducts();
-        ApiResponse<List<ProductResponse>> apiResponse = new ApiResponse<>(true, "All products retrieved successfully.", response);
+    public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProducts() {
+        List<ProductDto> response = productService.getAllProducts();
+        ApiResponse<List<ProductDto>> apiResponse = new ApiResponse<>(true, "All products retrieved successfully.", response);
         return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/categories")
     @PreAuthorize("hasAnyRole('ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<CategoryResponse>> addCategory(@Valid @RequestBody CategoryRequest request) {
-        CategoryResponse response = productService.addCategory(request);
-        ApiResponse<CategoryResponse> apiResponse = new ApiResponse<>(true, "Category created successfully.", response);
+    public ResponseEntity<ApiResponse<CategoryDto>> addCategory(@Valid @RequestBody CategoryRequest request) {
+        CategoryDto response = productService.createCategory(request);
+        ApiResponse<CategoryDto> apiResponse = new ApiResponse<>(true, "Category created successfully.", response);
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @GetMapping("/categories")
     @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN', 'STORE_MANAGER')")
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {
-        List<CategoryResponse> response = productService.getAllCategories();
-        ApiResponse<List<CategoryResponse>> apiResponse = new ApiResponse<>(true, "All categories retrieved successfully.", response);
+    public ResponseEntity<ApiResponse<List<CategoryDto>>> getAllCategories() {
+        List<CategoryDto> response = productService.getAllCategories();
+        ApiResponse<List<CategoryDto>> apiResponse = new ApiResponse<>(true, "All categories retrieved successfully.", response);
         return ResponseEntity.ok(apiResponse);
     }
 }

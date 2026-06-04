@@ -1,7 +1,7 @@
 package com.retailforge.inventory.service;
 
 import com.retailforge.inventory.dto.*;
-import com.retailforge.inventory.event.LowStockAlertEvent;
+import com.retailforge.event.LowStockAlertEvent;
 import com.retailforge.inventory.event.StockUpdatedEvent;
 import com.retailforge.inventory.exception.*;
 import com.retailforge.inventory.model.Inventory;

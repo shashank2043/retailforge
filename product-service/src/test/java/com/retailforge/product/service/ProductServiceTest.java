@@ -1,9 +1,9 @@
 package com.retailforge.product.service;
 
+import com.retailforge.dto.CategoryDto;
+import com.retailforge.dto.ProductDto;
 import com.retailforge.product.dto.CategoryRequest;
-import com.retailforge.product.dto.CategoryResponse;
 import com.retailforge.product.dto.ProductRequest;
-import com.retailforge.product.dto.ProductResponse;
 import com.retailforge.product.exception.CategoryAlreadyExistsException;
 import com.retailforge.product.exception.CategoryNotFoundException;
 import com.retailforge.product.exception.ProductAlreadyExistsException;
@@ -64,7 +64,7 @@ public class ProductServiceTest {
         when(categoryRepository.findByName(request.name())).thenReturn(Optional.empty());
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
-        CategoryResponse response = productService.addCategory(request);
+        CategoryDto response = productService.createCategory(request);
 
         assertNotNull(response);
         assertEquals(category.getId(), response.id());
@@ -77,7 +77,7 @@ public class ProductServiceTest {
         CategoryRequest request = new CategoryRequest("Beverages", "Cold drinks and juices");
         when(categoryRepository.findByName(request.name())).thenReturn(Optional.of(category));
 
-        assertThrows(CategoryAlreadyExistsException.class, () -> productService.addCategory(request));
+        assertThrows(CategoryAlreadyExistsException.class, () -> productService.createCategory(request));
         verify(categoryRepository, never()).save(any(Category.class));
     }
 
@@ -88,7 +88,7 @@ public class ProductServiceTest {
         when(categoryRepository.findById(request.categoryId())).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        ProductResponse response = productService.addProduct(request);
+        ProductDto response = productService.createProduct(request);
 
         assertNotNull(response);
         assertEquals(product.getId(), response.id());
@@ -102,7 +102,7 @@ public class ProductServiceTest {
         ProductRequest request = new ProductRequest("9876543210", "Mango Juice", BigDecimal.valueOf(2.50), BigDecimal.valueOf(18.0), 1L);
         when(productRepository.findByBarcode(request.barcode())).thenReturn(Optional.of(product));
 
-        assertThrows(ProductAlreadyExistsException.class, () -> productService.addProduct(request));
+        assertThrows(ProductAlreadyExistsException.class, () -> productService.createProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -112,7 +112,7 @@ public class ProductServiceTest {
         when(productRepository.findByBarcode(request.barcode())).thenReturn(Optional.empty());
         when(categoryRepository.findById(request.categoryId())).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> productService.addProduct(request));
+        assertThrows(CategoryNotFoundException.class, () -> productService.createProduct(request));
         verify(productRepository, never()).save(any(Product.class));
     }
 
@@ -121,7 +121,7 @@ public class ProductServiceTest {
         String barcode = "9876543210";
         when(productRepository.findByBarcode(barcode)).thenReturn(Optional.of(product));
 
-        ProductResponse response = productService.getProductByBarcode(barcode);
+        ProductDto response = productService.getProductByBarcode(barcode);
 
         assertNotNull(response);
         assertEquals(product.getBarcode(), response.barcode());
@@ -140,7 +140,7 @@ public class ProductServiceTest {
     public void testGetAllProducts() {
         when(productRepository.findAll()).thenReturn(List.of(product));
 
-        List<ProductResponse> list = productService.getAllProducts();
+        List<ProductDto> list = productService.getAllProducts();
 
         assertNotNull(list);
         assertEquals(1, list.size());

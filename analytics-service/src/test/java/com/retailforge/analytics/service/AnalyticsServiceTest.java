@@ -3,8 +3,8 @@ package com.retailforge.analytics.service;
 import com.retailforge.api.response.ApiResponse;
 import com.retailforge.analytics.client.BillingClient;
 import com.retailforge.analytics.dto.DashboardResponse;
-import com.retailforge.analytics.dto.OrderItemResponse;
-import com.retailforge.analytics.dto.OrderResponse;
+import com.retailforge.dto.OrderItemResponse;
+import com.retailforge.dto.OrderResponse;
 import com.retailforge.analytics.model.DailySalesMetric;
 import com.retailforge.analytics.repository.DailySalesMetricRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,12 +50,10 @@ public class AnalyticsServiceTest {
 
     @Test
     public void testProcessPaymentCompleted_ExistingMetric() {
-        ApiResponse<OrderResponse> responseEnvelope = new ApiResponse<>(true, "Success", orderResponse);
-        when(billingClient.getOrderDetails(1L)).thenReturn(responseEnvelope);
         when(metricRepository.findByMetricDate(LocalDate.now())).thenReturn(Optional.of(metric));
         when(metricRepository.save(any(DailySalesMetric.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(59.00));
+        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(59.00), BigDecimal.valueOf(9.00));
 
         assertEquals(new BigDecimal("159.00"), metric.getTotalRevenue());
         assertEquals(new BigDecimal("13.50"), metric.getTotalCgst()); // 9.00 + 4.50
@@ -66,24 +64,20 @@ public class AnalyticsServiceTest {
 
     @Test
     public void testProcessPaymentCompleted_NewMetric() {
-        ApiResponse<OrderResponse> responseEnvelope = new ApiResponse<>(true, "Success", orderResponse);
-        when(billingClient.getOrderDetails(1L)).thenReturn(responseEnvelope);
         when(metricRepository.findByMetricDate(LocalDate.now())).thenReturn(Optional.empty());
         when(metricRepository.save(any(DailySalesMetric.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(59.00));
+        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(59.00), BigDecimal.valueOf(9.00));
 
         verify(metricRepository, times(1)).save(any(DailySalesMetric.class));
     }
 
     @Test
-    public void testProcessPaymentCompleted_BillingClientError() {
-        // Mock client exception to test graceful telemetry updates with fallback zero-GST logic
-        when(billingClient.getOrderDetails(1L)).thenThrow(new RuntimeException("Feign client failure"));
+    public void testProcessPaymentCompleted_WithZeroGst() {
         when(metricRepository.findByMetricDate(LocalDate.now())).thenReturn(Optional.of(metric));
         when(metricRepository.save(any(DailySalesMetric.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(50.00));
+        analyticsService.processPaymentCompleted(1L, BigDecimal.valueOf(50.00), BigDecimal.ZERO);
 
         // Revenue should still increase by 50, but GST remains unchanged
         assertEquals(new BigDecimal("150.00"), metric.getTotalRevenue());

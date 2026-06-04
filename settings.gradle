@@ -1,4 +1,5 @@
 rootProject.name = 'retailforge-parent'
+include 'common'
 include 'eureka-server'
 include 'api-gateway'
 include 'auth-service'

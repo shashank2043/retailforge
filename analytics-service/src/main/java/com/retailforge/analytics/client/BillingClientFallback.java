@@ -1,7 +1,7 @@
 package com.retailforge.analytics.client;
 
 import com.retailforge.api.response.ApiResponse;
-import com.retailforge.analytics.dto.OrderResponse;
+import com.retailforge.dto.OrderResponse;
 import com.retailforge.analytics.exception.BillingServiceOfflineException;
 import org.springframework.stereotype.Component;
 

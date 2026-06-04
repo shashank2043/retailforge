@@ -1,4 +1,4 @@
-package com.retailforge.inventory.event;
+package com.retailforge.event;
 
 import java.util.List;
 

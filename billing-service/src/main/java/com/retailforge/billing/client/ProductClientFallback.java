@@ -1,7 +1,7 @@
 package com.retailforge.billing.client;
 
 import com.retailforge.api.response.ApiResponse;
-import com.retailforge.billing.dto.ProductDto;
+import com.retailforge.dto.ProductDto;
 import com.retailforge.billing.exception.ProductCatalogOfflineException;
 import org.springframework.stereotype.Component;
 

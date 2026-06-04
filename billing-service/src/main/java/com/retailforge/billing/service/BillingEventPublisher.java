@@ -1,7 +1,7 @@
 package com.retailforge.billing.service;
 
-import com.retailforge.billing.event.OrderCreatedEvent;
-import com.retailforge.billing.event.PaymentCompletedEvent;
+import com.retailforge.event.OrderCreatedEvent;
+import com.retailforge.event.PaymentCompletedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;

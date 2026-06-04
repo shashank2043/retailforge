@@ -1,4 +1,4 @@
-package com.retailforge.analytics.dto;
+package com.retailforge.dto;
 
 import java.math.BigDecimal;
 

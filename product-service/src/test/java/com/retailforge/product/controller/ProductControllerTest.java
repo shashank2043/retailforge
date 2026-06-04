@@ -1,10 +1,10 @@
 package com.retailforge.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.retailforge.dto.CategoryDto;
+import com.retailforge.dto.ProductDto;
 import com.retailforge.product.dto.CategoryRequest;
-import com.retailforge.product.dto.CategoryResponse;
 import com.retailforge.product.dto.ProductRequest;
-import com.retailforge.product.dto.ProductResponse;
 import com.retailforge.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,19 +58,19 @@ public class ProductControllerTest {
         }
     }
 
-    private CategoryResponse categoryResponse;
-    private ProductResponse productResponse;
+    private CategoryDto categoryResponse;
+    private ProductDto productResponse;
 
     @BeforeEach
     public void setup() {
-        categoryResponse = new CategoryResponse(1L, "Beverages", "Cold drinks");
-        productResponse = new ProductResponse(10L, "9876543210", "Mango Juice", BigDecimal.valueOf(2.50), BigDecimal.valueOf(18.0), categoryResponse);
+        categoryResponse = new CategoryDto(1L, "Beverages", "Cold drinks");
+        productResponse = new ProductDto(10L, "9876543210", "Mango Juice", BigDecimal.valueOf(2.50), BigDecimal.valueOf(18.0), categoryResponse);
     }
 
     @Test
     public void testAddProduct_Success() throws Exception {
         ProductRequest request = new ProductRequest("9876543210", "Mango Juice", BigDecimal.valueOf(2.50), BigDecimal.valueOf(18.0), 1L);
-        when(productService.addProduct(any(ProductRequest.class))).thenReturn(productResponse);
+        when(productService.createProduct(any(ProductRequest.class))).thenReturn(productResponse);
 
         mockMvc.perform(post("/products")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ public class ProductControllerTest {
     @Test
     public void testAddCategory_Success() throws Exception {
         CategoryRequest request = new CategoryRequest("Beverages", "Cold drinks");
-        when(productService.addCategory(any(CategoryRequest.class))).thenReturn(categoryResponse);
+        when(productService.createCategory(any(CategoryRequest.class))).thenReturn(categoryResponse);
 
         mockMvc.perform(post("/products/categories")
                 .contentType(MediaType.APPLICATION_JSON)
