@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableCaching
+//@EnableCaching
 @EnableKafka
 @EnableMethodSecurity
 public class AnalyticsServiceApplication {

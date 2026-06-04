@@ -77,4 +77,13 @@ public class InventoryController {
         ApiResponse<List<StockTransactionResponse>> apiResponse = new ApiResponse<>(true, "Warehouse transaction history ledger loaded.", response);
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/warehouse/{warehouseId}")
+    @PreAuthorize("hasAnyRole('CASHIER', 'ADMIN', 'STORE_MANAGER')")
+    public ResponseEntity<ApiResponse<List<InventoryResponse>>> getProductsByWarehouse(@PathVariable Long warehouseId) {
+        List<InventoryResponse> response = inventoryService.getProductsByWarehouse(warehouseId);
+        ApiResponse<List<InventoryResponse>> apiResponse = new ApiResponse<>(true, "All products retrieved successfully.", response);
+        return ResponseEntity.ok(apiResponse);
+    }
+
 }

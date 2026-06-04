@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableCaching
+//@EnableCaching
 @EnableMethodSecurity
 public class ProductServiceApplication {
     public static void main(String[] args) {

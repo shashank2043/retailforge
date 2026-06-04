@@ -204,7 +204,10 @@ public class BillingService {
         }
 
         // 3. Generate PDF Invoice Receipt
-        String invoiceNumber = "INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String orderSuffix = savedOrder.getOrderNumber().contains("-") ? 
+                savedOrder.getOrderNumber().substring(savedOrder.getOrderNumber().indexOf("-") + 1) : 
+                savedOrder.getOrderNumber();
+        String invoiceNumber = "INV-" + orderSuffix;
         byte[] pdfBytes = InvoicePdfGenerator.generateInvoicePdf(savedOrder, savedPayment, invoiceNumber, productMap,
                 businessName, businessAddress, businessGstin, businessPhone);
 

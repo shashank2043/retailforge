@@ -217,4 +217,17 @@ public class InventoryServiceTest {
 
         assertThrows(InsufficientStockException.class, () -> inventoryService.transferStock(request));
     }
+
+    @Test
+    public void testGetProductsByWarehouse() {
+        when(inventoryRepository.findByWarehouseId(1L)).thenReturn(List.of(inventory));
+
+        List<InventoryResponse> responses = inventoryService.getProductsByWarehouse(1L);
+
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals(100L, responses.get(0).productId());
+        assertEquals(1L, responses.get(0).warehouseId());
+        verify(inventoryRepository, times(1)).findByWarehouseId(1L);
+    }
 }

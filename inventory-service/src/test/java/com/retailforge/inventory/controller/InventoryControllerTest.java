@@ -150,4 +150,15 @@ public class InventoryControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data[0].type").value("ADDITION"));
     }
+
+    @Test
+    public void testGetProductsByWarehouse() throws Exception {
+        when(inventoryService.getProductsByWarehouse(1L)).thenReturn(List.of(inventoryResponse));
+
+        mockMvc.perform(get("/inventory/warehouse/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("All products retrieved successfully."))
+                .andExpect(jsonPath("$.data[0].productId").value(100L));
+    }
 }

@@ -236,8 +236,7 @@ public class InventoryService {
     @Transactional(readOnly = true)
     public List<InventoryResponse> getInventoryByProduct(Long productId) {
         // Return inventory lists across warehouses
-        return inventoryRepository.findAll().stream()
-            .filter(inv -> inv.getProductId().equals(productId))
+        return inventoryRepository.findByProductId(productId).stream()
             .map(this::mapToInventoryResponse)
             .toList();
     }
@@ -272,6 +271,14 @@ public class InventoryService {
             log.info("Reserving {} units for product {} from warehouse {}", item.quantity(), item.productId(), targetInventory.getWarehouseId());
             reduceStock(item.productId(), targetInventory.getWarehouseId(), item.quantity());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<InventoryResponse> getProductsByWarehouse(Long warehouseId) {
+        log.info("Trying to fetch products for warehouse: {}", warehouseId);
+        return inventoryRepository.findByWarehouseId(warehouseId).stream()
+            .map(this::mapToInventoryResponse)
+            .toList();
     }
 
     private void checkLowStockAlert(Long productId, Long warehouseId, int currentQty) {

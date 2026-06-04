@@ -141,7 +141,15 @@ public class BillingServiceTest {
 
         assertEquals("COMPLETED", order.getStatus());
         verify(paymentRepository, times(1)).save(any(Payment.class));
-        verify(invoiceRepository, times(1)).save(any(Invoice.class));
+        
+        // Capture and verify invoice record
+        org.mockito.ArgumentCaptor<Invoice> invoiceCaptor = org.mockito.ArgumentCaptor.forClass(Invoice.class);
+        verify(invoiceRepository, times(1)).save(invoiceCaptor.capture());
+        
+        Invoice savedInvoice = invoiceCaptor.getValue();
+        assertEquals("INV-12345", savedInvoice.getInvoiceNumber()); // orderNumber was ORD-12345
+        assertTrue(savedInvoice.getPdfUrl().contains("INV-12345.pdf"));
+        
         verify(eventPublisher, times(1)).publishPaymentCompleted(any(PaymentCompletedEvent.class));
     }
 
